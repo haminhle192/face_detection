@@ -763,8 +763,13 @@ def rerec(bboxA):
     return bboxA
 
 def imresample(img, sz):
-    im_data = cv2.resize(img, (sz[1], sz[0]), interpolation=cv2.INTER_AREA) #@UndefinedVariable
-    return im_data
+    image_tf = tf.placeholder(tf.float32, shape=(None, None, None, 3))
+    resize_tf = tf.image.resize(image_tf, [sz[0], sz[1]], method=tf.image.ResizeMethod.AREA)
+    with tf.Session() as sess:
+        result = sess.run(resize_tf, feed_dict={image_tf: np.array([img])})
+        return result[0]
+    # im_data = cv2.resize(img, (sz[1], sz[0]), interpolation=cv2.INTER_AREA) #@UndefinedVariable
+    # return im_data
 
     # This method is kept for debugging purpose
 #     h=img.shape[0]

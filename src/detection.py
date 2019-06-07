@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 # from scipy import misc
 import src.align.detect_face as detect_face
-import cv2
+# import cv2
 
 class Face:
     def __init__(self):
@@ -55,8 +55,17 @@ class Detection:
             face.bounding_box[2] = np.minimum(bb[2] + self.face_crop_margin / 2, img_size[1])
             face.bounding_box[3] = np.minimum(bb[3] + self.face_crop_margin / 2, img_size[0])
             cropped = image[face.bounding_box[1]:face.bounding_box[3], face.bounding_box[0]:face.bounding_box[2], :]
+
+            # Resize using misc
             # face.image = misc.imresize(cropped, (self.face_crop_size, self.face_crop_size), interp='bilinear')
-            face.image = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
+            # Resize using openCV
+            # face.image = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
+            # Resize using tensorflow
+            image_tf = tf.placeholder(tf.float32, shape=(None, None, None, 3))
+            resize_tf = tf.image.resize(image_tf, [self.face_crop_size, self.face_crop_size], method=tf.image.ResizeMethod.BILINEAR)
+            with tf.Session() as sess:
+                result = sess.run(resize_tf, feed_dict={image_tf: np.array([cropped])})
+            face.image = result[0]
 
             faces.append(face)
 
