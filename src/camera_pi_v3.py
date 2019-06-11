@@ -6,7 +6,7 @@ import threading
 import picamera
 import numpy as np
 from PIL import Image
-import src.detection as detection
+import detection as detection
 
 client_socket = socket.socket()
 client_socket.connect(('192.168.1.183', 8000))
