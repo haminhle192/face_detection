@@ -37,7 +37,7 @@ try:
                             # size = self.stream.tell()
                             # self.stream.seek(0)
                             # self.stream.read()
-                            image = Image.open(self.stream)
+                            image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
@@ -75,7 +75,7 @@ try:
         pool = [ImageStreamer(detection) for i in range(2)]
         camera.resolution = (800, 600)
         time.sleep(2)
-        camera.capture_sequence(streams(), 'rgb', use_video_port=True)
+        camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
     while pool:
         with pool_lock:
