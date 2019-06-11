@@ -5,7 +5,7 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 # from scipy import misc
-import src.align.detect_face as detect_face
+import align.detect_face as detect_face
 import cv2
 
 class Face:
