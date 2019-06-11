@@ -33,20 +33,18 @@ try:
                 if self.event.wait(1):
                     try:
                         with connection_lock:
-                            # size = self.stream.tell()
-                            # self.stream.seek(0)
-                            # self.stream.read()
+                            size = self.stream.tell()
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
-                            start = time.time()
                             faces = self.detection.find_faces(open_cv_image)
-                            print('Time detection %.2f' % (time.time() - start))
-                            print('Face detected %d' % len(faces))
+                            if len(faces) > 0:
+                                connection.write(struct.pack('<L', size))
+                                connection.flush()
+                                self.stream.seek(0)
+                                connection.write(self.stream.read())
                             self.stream.seek(0)
-                            # connection.write(struct.pack('<L', ))
-                            # connection.flush()
-                            # connection.write(self.stream.read())
+                            self.stream.truncate()
                     finally:
                         self.stream.seek(0)
                         self.stream.truncate()
@@ -73,7 +71,7 @@ try:
     detection = detection.Detection()
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution = (480, 320)
+        camera.resolution = (320, 240)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
