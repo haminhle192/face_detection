@@ -41,10 +41,10 @@ try:
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
-                            print('Convert time %.2f' % (start - time.time()))
+                            print('Convert time %.2f' % (time.time() - start))
                             start = time.time()
                             faces = self.detection.find_faces(open_cv_image)
-                            print('Detect time %.2f' % (start - time.time()))
+                            print('Detect time %.2f' % (time.time() - start))
                             self.stream.seek(0)
                             print('Face detected %d' % len(faces))
                             # connection.write(struct.pack('<L', ))
@@ -76,7 +76,7 @@ try:
     detection = detection.Detection()
 
     with picamera.PiCamera() as camera:
-        pool = [ImageStreamer(detection) for i in range(2)]
+        pool = [ImageStreamer(detection) for i in range(1)]
         camera.resolution = (800, 600)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
