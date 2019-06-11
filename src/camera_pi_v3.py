@@ -40,7 +40,9 @@ try:
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
+                            start = time.time()
                             faces = self.detection.find_faces(open_cv_image)
+                            print('Time detection %.2f' % (time.time() - start))
                             self.stream.seek(0)
                             print('Face detected %d' % len(faces))
                             # connection.write(struct.pack('<L', ))
@@ -73,7 +75,7 @@ try:
 
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution = (800, 600)
+        camera.resolution = (320, 240)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
