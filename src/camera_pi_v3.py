@@ -12,6 +12,7 @@ import detection as detection
 client_socket = socket.socket()
 client_socket.connect(('192.168.1.183', 8000))
 connection = client_socket.makefile('wb')
+
 try:
     connection_lock = threading.Lock()
     pool = []
