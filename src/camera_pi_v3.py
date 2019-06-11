@@ -4,6 +4,7 @@ import struct
 import time
 import threading
 import picamera
+import cv2
 import numpy as np
 from PIL import Image
 import detection as detection
@@ -17,11 +18,11 @@ try:
     pool_lock = threading.Lock()
 
     class ImageStreamer(threading.Thread):
-        def __init__(self,
-                     detection):
+        def __init__(self, detection, face_cascade):
             super(ImageStreamer, self).__init__()
             print("Starting Image Streamer")
             self.detection = detection
+            self.face_cascade = face_cascade
             self.stream = io.BytesIO()
             self.event = threading.Event()
             self.terminated = False
@@ -39,9 +40,11 @@ try:
                             # self.stream.read()
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
-                            open_cv_image = open_cv_image[:, :, ::-1].copy()
+                            # open_cv_image = open_cv_image[:, :, ::-1].copy()
                             start = time.time()
-                            faces = self.detection.find_faces(open_cv_image)
+                            gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+                            faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
+                            # faces = self.detection.find_faces(open_cv_image)
                             print('Time detection %.2f' % (time.time() - start))
                             self.stream.seek(0)
                             print('Face detected %d' % len(faces))
@@ -72,10 +75,10 @@ try:
             finish = time.time()
 
     detection = detection.Detection()
-
+    faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
     with picamera.PiCamera() as camera:
-        pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution = (480, 320)
+        pool = [ImageStreamer(detection, faceCascade) for i in range(2)]
+        camera.resolution = (640, 480)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
