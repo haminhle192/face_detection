@@ -4,7 +4,6 @@ import struct
 import time
 import threading
 import picamera
-import cv2
 import numpy as np
 from PIL import Image
 import detection as detection
@@ -68,9 +67,9 @@ try:
             count += 1
             finish = time.time()
 
-    detection = detection.Detection()
+    # detection = detection.Detection()
     with picamera.PiCamera() as camera:
-        pool = [ImageStreamer(detection) for i in range(2)]
+        pool = [ImageStreamer(detection.Detection()) for i in range(3)]
         camera.resolution = (320, 240)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
