@@ -42,7 +42,7 @@ try:
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
                             self.stream.seek(0)
-                            print('Face detected %d' % faces.size)
+                            print('Face detected %d' % len(faces))
                             # connection.write(struct.pack('<L', ))
                             # connection.flush()
                             # connection.write(self.stream.read())
