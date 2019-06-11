@@ -40,7 +40,7 @@ try:
                             # self.stream.read()
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
-                            # open_cv_image = open_cv_image[:, :, ::-1].copy()
+                            open_cv_image = open_cv_image[:, :, ::-1].copy()
                             start = time.time()
                             gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
                             faces = self.face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
