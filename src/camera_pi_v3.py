@@ -40,9 +40,8 @@ try:
                             faces = self.detection.find_faces(open_cv_image)
                             if len(faces) > 0:
                                 connection.write(struct.pack('<L', size))
-                                connection.flush()
                                 self.stream.seek(0)
-                                connection.write(self.stream.read())
+                                connection.write(self.stream.read(size))
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
