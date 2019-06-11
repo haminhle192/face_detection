@@ -4,18 +4,13 @@ from __future__ import print_function
 
 import numpy as np
 import tensorflow as tf
-# from scipy import misc
 import align.detect_face as detect_face
 import cv2
 
 class Face:
     def __init__(self):
-        self.name = None
         self.bounding_box = None
         self.image = None
-        self.container_image = None
-        self.embedding = None
-
 
 class Detection:
     # face detection parameters
@@ -46,7 +41,6 @@ class Detection:
                                                     self.threshold, self.factor)
         for bb in bounding_boxes:
             face = Face()
-            face.container_image = image
             face.bounding_box = np.zeros(4, dtype=np.int32)
 
             img_size = np.asarray(image.shape)[0:2]
@@ -57,9 +51,5 @@ class Detection:
             cropped = image[face.bounding_box[1]:face.bounding_box[3], face.bounding_box[0]:face.bounding_box[2], :]
             # face.image = misc.imresize(cropped, (self.face_crop_size, self.face_crop_size), interp='bilinear')
             face.image = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
-
             faces.append(face)
-
         return faces
-
-

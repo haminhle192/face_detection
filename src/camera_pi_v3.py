@@ -75,7 +75,7 @@ try:
 
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution = (320, 240)
+        camera.resolution = (480, 320)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
