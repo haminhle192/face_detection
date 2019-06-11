@@ -34,13 +34,14 @@ try:
                     try:
                         with connection_lock:
                             # faces = self.detection.find_faces(np.random.rand(160,160,3))
-                            size = self.stream.tell()
-                            self.stream.seek(0)
-                            self.stream.read(size)
+                            # size = self.stream.tell()
+                            # self.stream.seek(0)
+                            # self.stream.read()
                             image = Image.open(self.stream)
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
+                            self.stream.seek(0)
                             print('Face detected %d' % faces.size)
                             # connection.write(struct.pack('<L', ))
                             # connection.flush()
