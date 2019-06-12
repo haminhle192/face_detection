@@ -57,7 +57,7 @@ class Detection:
         return faces
 
 
-    def encode_jpeg(arr):
+    def encode_jpeg(self, arr):
         assert arr.dtype == np.uint8
          # simulate multi-channel array for single channel arrays
         while arr.ndim < 4:
