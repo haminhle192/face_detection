@@ -7,6 +7,7 @@ import picamera
 import numpy as np
 from PIL import Image
 import detection as detection
+import json
 
 client_socket = socket.socket()
 client_socket.connect(('192.168.1.183', 8000))
@@ -14,8 +15,33 @@ connection = client_socket.makefile('wb')
 
 try:
     connection_lock = threading.Lock()
+    reader_lock = threading.Lock()
     pool = []
     pool_lock = threading.Lock()
+
+
+    class StreamerReader(threading.Thread):
+        def __init__(self):
+            self.event = threading.Event()
+            self.terminated = False
+            self.start()
+
+        def run(self):
+             while not self.terminated:
+                 try:
+                     with reader_lock:
+                        data_length = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
+                        if data_length == 0:
+                            continue
+                        data = io.BytesIO()
+                        data.write(connection.read(data_length))
+                        decoded_data = data.decode('UTF-8')
+                        data.seek(0)
+                        j_data = json.loads(decoded_data)
+                        print(j_data)
+                 finally:
+                     self.event.clear()
+
 
     class ImageStreamer(threading.Thread):
         def __init__(self, detection):
@@ -33,15 +59,16 @@ try:
                 if self.event.wait(1):
                     try:
                         with connection_lock:
-                            size = self.stream.tell()
                             image = Image.open(self.stream).convert('RGB')
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
                             if len(faces) > 0:
+                                size = faces[0].data_image.tell()
                                 connection.write(struct.pack('<L', size))
                                 self.stream.seek(0)
-                                connection.write(self.stream.read(size))
+                                connection.write(faces[0].data_image.read(size))
+                                faces[0].data_image.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
@@ -70,9 +97,9 @@ try:
     detection = detection.Detection()
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution = (480, 320)
+        camera.resolution = (640, 480)
         time.sleep(2)
-        camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
+        camera.capture_sequence(streams(), 'jpg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
     while pool:
         with pool_lock:
