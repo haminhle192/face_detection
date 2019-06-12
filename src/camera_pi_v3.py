@@ -64,10 +64,10 @@ try:
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
                             if len(faces) > 0:
-                                size = faces[0].data_image.tell()
+                                size = len(faces[0].data_image)
                                 connection.write(struct.pack('<L', size))
                                 self.stream.seek(0)
-                                connection.write(faces[0].data_image.read(size))
+                                connection.write(faces[0].data_image)
                                 faces[0].data_image.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()

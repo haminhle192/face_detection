@@ -51,8 +51,8 @@ class Detection:
             face.bounding_box[3] = np.minimum(bb[3] + self.face_crop_margin / 2, img_size[0])
             cropped = image[face.bounding_box[1]:face.bounding_box[3], face.bounding_box[0]:face.bounding_box[2], :]
             # face.image = misc.imresize(cropped, (self.face_crop_size, self.face_crop_size), interp='bilinear')
-            # face.image = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
-            face.data_image = self.encode_jpeg(cropped)
+            image_cropped = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
+            face.data_image = self.encode_jpeg(image_cropped)
             faces.append(face)
         return faces
 
@@ -71,6 +71,7 @@ class Detection:
             img = Image.fromarray(reshaped, mode='RGB')
         else:
             raise ValueError("Number of image channels should be 1 or 3. Got: {}".format(arr.shape[3]))
-        stream = io.BytesIO()
-        img.save(stream, "JPEG")
-        return stream
+        with io.BytesIO() as output:
+            img.save(output, format="JPEG")
+            data_arry = output.getvalue()
+            return data_arry
