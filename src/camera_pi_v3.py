@@ -99,7 +99,7 @@ try:
         pool = [ImageStreamer(detection) for i in range(2)]
         camera.resolution = (640, 480)
         time.sleep(2)
-        camera.capture_sequence(streams(), 'jpg', use_video_port=True)
+        camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
     while pool:
         with pool_lock:
