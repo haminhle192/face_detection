@@ -67,9 +67,9 @@ try:
             count += 1
             finish = time.time()
 
-    # detection = detection.Detection()
+    detection = detection.Detection()
     with picamera.PiCamera() as camera:
-        pool = [ImageStreamer(detection.Detection()) for i in range(3)]
+        pool = [ImageStreamer(detection) for i in range(2)]
         camera.resolution = (320, 240)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
