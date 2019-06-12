@@ -68,7 +68,6 @@ try:
                                 connection.write(struct.pack('<L', size))
                                 self.stream.seek(0)
                                 connection.write(faces[0].data_image)
-                                faces[0].data_image.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
