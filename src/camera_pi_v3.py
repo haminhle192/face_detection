@@ -67,13 +67,14 @@ try:
                             if len(faces) > 0:
                                 data = faces[0].data_image[1]
                                 data = np.reshape(data, data.shape[0])
-                                print(data.shape)
-                                size = len(data)
+                                with io.BytesIO() as b:
+                                    np.save(b, data)
+                                size = b.tell()
                                 print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
-                                connection.flush()
-                                connection.write(data)
-                                connection.flush()
+                                connection.write(b.read(size))
+                                b.seek(0)
+                                b.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
