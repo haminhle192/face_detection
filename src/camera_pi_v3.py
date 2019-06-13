@@ -64,16 +64,19 @@ try:
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
-                            print('Face detected %d' % len(faces))
                             if len(faces) > 0:
                                 data = faces[0].data_image[1]
                                 data = np.reshape(data, data.shape[0])
                                 np.save(self.stream_face, data)
                                 size = self.stream_face.tell()
-                                print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
-                                connection.write(self.stream_face.read(size))
                                 self.stream_face.seek(0)
+                                connection.flush()
+                                connection.write(self.stream_face.read(size))
+                                connection.flush()
+                                print('Did send %d' % size)
+                                self.stream_face.seek(0)
+                                self.stream_face.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
