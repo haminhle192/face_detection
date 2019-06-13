@@ -65,13 +65,13 @@ try:
                             faces = self.detection.find_faces(open_cv_image)
                             print('Face detected %d' % len(faces))
                             if len(faces) > 0:
-                                frame = np.asarray(bytearray(faces[0].data_image))
-                                size = len(frame)
+                                # frame = np.asarray(faces[0].data_image)
+                                size = faces[0].data_image.tell()
                                 print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
                                 self.stream.flush()
                                 self.stream.seek(0)
-                                connection.write(frame)
+                                connection.write(faces[0].data_image.read(size))
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
