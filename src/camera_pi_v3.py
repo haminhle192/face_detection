@@ -49,6 +49,7 @@ try:
             print("Starting Image Streamer")
             self.detection = detection
             self.stream = io.BytesIO()
+            self.stream_face = io.BytesIO()
             self.event = threading.Event()
             self.terminated = False
             self.start()
@@ -67,14 +68,12 @@ try:
                             if len(faces) > 0:
                                 data = faces[0].data_image[1]
                                 data = np.reshape(data, data.shape[0])
-                                with io.BytesIO() as b:
-                                    np.save(b, data)
-                                size = b.tell()
+                                np.save(self.stream_face, data)
+                                size = self.stream_face.tell()
                                 print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
-                                connection.write(b.read(size))
-                                b.seek(0)
-                                b.truncate()
+                                connection.write(self.stream_face.read(size))
+                                self.stream_face.seek(0)
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
