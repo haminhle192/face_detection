@@ -54,6 +54,7 @@ class Detection:
             image_cropped = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
             # image_cropped = cv2.bitwise_not(image_cropped)
             # face.data_image = cv2.imencode('.jpg',image_cropped)
+            print(type(image_cropped))
             face.data_image = self.encode_jpeg(image_cropped)
             faces.append(face)
         return faces
@@ -73,7 +74,6 @@ class Detection:
             img = Image.fromarray(reshaped, mode='RGB')
         else:
             raise ValueError("Number of image channels should be 1 or 3. Got: {}".format(arr.shape[3]))
-        with io.BytesIO() as output:
-            img.save(output, format="JPEG")
-            # data_arry = output.getvalue()
-            return output
+        output =  io.BytesIO()
+        img.save(output, format="JPEG")
+        return output
