@@ -380,41 +380,40 @@ def detect_face(img, minsize, pnet, rnet, onet, threshold, factor):
             total_boxes = rerec(total_boxes.copy())
 
     numbox = total_boxes.shape[0]
-    # if numbox>0:
-    #     # third stage
-    #     total_boxes = np.fix(total_boxes).astype(np.int32)
-    #     dy, edy, dx, edx, y, ey, x, ex, tmpw, tmph = pad(total_boxes.copy(), w, h)
-    #     tempimg = np.zeros((48,48,3,numbox))
-    #     for k in range(0,numbox):
-    #         tmp = np.zeros((int(tmph[k]),int(tmpw[k]),3))
-    #         tmp[dy[k]-1:edy[k],dx[k]-1:edx[k],:] = img[y[k]-1:ey[k],x[k]-1:ex[k],:]
-    #         if tmp.shape[0]>0 and tmp.shape[1]>0 or tmp.shape[0]==0 and tmp.shape[1]==0:
-    #             tempimg[:,:,:,k] = imresample(tmp, (48, 48))
-    #         else:
-    #             return np.empty()
-    #     tempimg = (tempimg-127.5)*0.0078125
-    #     tempimg1 = np.transpose(tempimg, (3,1,0,2))
-    #     out = onet(tempimg1)
-    #     out0 = np.transpose(out[0])
-    #     out1 = np.transpose(out[1])
-    #     out2 = np.transpose(out[2])
-    #     score = out2[1,:]
-    #     points = out1
-    #     ipass = np.where(score>threshold[2])
-    #     points = points[:,ipass[0]]
-    #     total_boxes = np.hstack([total_boxes[ipass[0],0:4].copy(), np.expand_dims(score[ipass].copy(),1)])
-    #     mv = out0[:,ipass[0]]
-    #
-    #     w = total_boxes[:,2]-total_boxes[:,0]+1
-    #     h = total_boxes[:,3]-total_boxes[:,1]+1
-    #     points[0:5,:] = np.tile(w,(5, 1))*points[0:5,:] + np.tile(total_boxes[:,0],(5, 1))-1
-    #     points[5:10,:] = np.tile(h,(5, 1))*points[5:10,:] + np.tile(total_boxes[:,1],(5, 1))-1
-    #     if total_boxes.shape[0]>0:
-    #         total_boxes = bbreg(total_boxes.copy(), np.transpose(mv))
-    #         pick = nms(total_boxes.copy(), 0.7, 'Min')
-    #         total_boxes = total_boxes[pick,:]
-    #         points = points[:,pick]
-                
+    if numbox>0:
+        # third stage
+        total_boxes = np.fix(total_boxes).astype(np.int32)
+        dy, edy, dx, edx, y, ey, x, ex, tmpw, tmph = pad(total_boxes.copy(), w, h)
+        tempimg = np.zeros((48,48,3,numbox))
+        for k in range(0,numbox):
+            tmp = np.zeros((int(tmph[k]),int(tmpw[k]),3))
+            tmp[dy[k]-1:edy[k],dx[k]-1:edx[k],:] = img[y[k]-1:ey[k],x[k]-1:ex[k],:]
+            if tmp.shape[0]>0 and tmp.shape[1]>0 or tmp.shape[0]==0 and tmp.shape[1]==0:
+                tempimg[:,:,:,k] = imresample(tmp, (48, 48))
+            else:
+                return np.empty()
+        tempimg = (tempimg-127.5)*0.0078125
+        tempimg1 = np.transpose(tempimg, (3,1,0,2))
+        out = onet(tempimg1)
+        out0 = np.transpose(out[0])
+        out1 = np.transpose(out[1])
+        out2 = np.transpose(out[2])
+        score = out2[1,:]
+        points = out1
+        ipass = np.where(score>threshold[2])
+        points = points[:,ipass[0]]
+        total_boxes = np.hstack([total_boxes[ipass[0],0:4].copy(), np.expand_dims(score[ipass].copy(),1)])
+        mv = out0[:,ipass[0]]
+
+        w = total_boxes[:,2]-total_boxes[:,0]+1
+        h = total_boxes[:,3]-total_boxes[:,1]+1
+        points[0:5,:] = np.tile(w,(5, 1))*points[0:5,:] + np.tile(total_boxes[:,0],(5, 1))-1
+        points[5:10,:] = np.tile(h,(5, 1))*points[5:10,:] + np.tile(total_boxes[:,1],(5, 1))-1
+        if total_boxes.shape[0]>0:
+            total_boxes = bbreg(total_boxes.copy(), np.transpose(mv))
+            pick = nms(total_boxes.copy(), 0.7, 'Min')
+            total_boxes = total_boxes[pick,:]
+            points = points[:,pick]
     return total_boxes, points
 
 
