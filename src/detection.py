@@ -52,10 +52,10 @@ class Detection:
             cropped = image[face.bounding_box[1]:face.bounding_box[3], face.bounding_box[0]:face.bounding_box[2], :]
             # face.image = misc.imresize(cropped, (self.face_crop_size, self.face_crop_size), interp='bilinear')
             image_cropped = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
-            # image_cropped = cv2.bitwise_not(image_cropped)
-            # face.data_image = cv2.imencode('.jpg',image_cropped)
-            print(image_cropped.shape)
-            face.data_image = self.encode_jpeg(image_cropped)
+            image_cropped = cv2.bitwise_not(image_cropped)
+            face.data_image = cv2.imencode('.jpg',image_cropped)
+            # print(image_cropped.shape)
+            # face.data_image = self.encode_jpeg(image_cropped)
             faces.append(face)
         return faces
 
@@ -71,7 +71,7 @@ class Detection:
         print(reshaped.shape)
         if reshaped.shape[2] == 1:
             img = Image.fromarray(reshaped[:,:,0], mode='L')
-        elif reshaped.shape[0] == 3:
+        elif reshaped.shape[1] == 3:
             img = Image.fromarray(reshaped, mode='RGB')
         else:
             raise ValueError("Number of image channels should be 1 or 3. Got: {}".format(arr.shape[3]))

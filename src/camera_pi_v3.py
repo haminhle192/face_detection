@@ -8,7 +8,6 @@ import numpy as np
 from PIL import Image
 import detection as detection
 import json
-from fractions import Fraction
 
 client_socket = socket.socket()
 client_socket.connect(('192.168.1.183', 8989))
@@ -66,20 +65,20 @@ try:
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
                             if len(faces) > 0:
-                                # data = faces[0].data_image[1]
-                                # data = np.reshape(data, data.shape[0])
-                                # print(data.shape)
-                                # np.save(self.stream_face, data)
-                                # stream_face = io.BytesIO()
-                                size = faces[0].data_image.tell()
-                                connection.write(struct.pack('<L', size))
-                                faces[0].data_image.seek(0)
-                                connection.flush()
-                                connection.write(faces[0].data_image.read(size))
-                                connection.flush()
-                                print('Did send %d' % size)
-                                faces[0].data_image.seek(0)
-                                faces[0].data_image.truncate()
+                                data = faces[0].data_image[1]
+                                data = np.reshape(data, data.shape[0])
+                                print(data.shape)
+                                with io.BytesIO() as stream_face:
+                                    np.save(self.stream_face, data)
+                                    size = stream_face.tell()
+                                    connection.write(struct.pack('<L', size))
+                                    stream_face.seek(0)
+                                    connection.flush()
+                                    connection.write(stream_face.read(size))
+                                    connection.flush()
+                                    print('Did send %d' % size)
+                                    stream_face.seek(0)
+                                    stream_face.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
