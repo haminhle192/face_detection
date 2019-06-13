@@ -105,8 +105,9 @@ try:
             finish = time.time()
 
     detection = detection.Detection()
-    with picamera.PiCamera(resolution=(640, 480), framerate=Fraction(1, 4)) as camera:
+    with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
+        camera.resolution=(640, 480)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
