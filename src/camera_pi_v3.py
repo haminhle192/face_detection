@@ -12,6 +12,7 @@ from fractions import Fraction
 
 client_socket = socket.socket()
 client_socket.connect(('192.168.1.183', 8989))
+print('Did connect to server')
 connection = client_socket.makefile('wb')
 
 try:
@@ -107,7 +108,7 @@ try:
     detection = detection.Detection()
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer(detection) for i in range(2)]
-        camera.resolution=(640, 480)
+        camera.resolution = (640, 480)
         time.sleep(2)
         camera.capture_sequence(streams(), 'jpeg', use_video_port=True)
     # Shut down the streamers in an orderly fashion
