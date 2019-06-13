@@ -63,6 +63,7 @@ try:
                             open_cv_image = np.array(image)
                             open_cv_image = open_cv_image[:, :, ::-1].copy()
                             faces = self.detection.find_faces(open_cv_image)
+                            print('Face detected %d' % len(faces))
                             if len(faces) > 0:
                                 size = len(faces[0].data_image)
                                 connection.write(struct.pack('<L', size))
