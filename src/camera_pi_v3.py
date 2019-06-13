@@ -69,7 +69,7 @@ try:
                                 data = np.reshape(data, data.shape[0])
                                 print(data.shape)
                                 with io.BytesIO() as stream_face:
-                                    np.save(self.stream_face, data)
+                                    np.save(stream_face, data)
                                     size = stream_face.tell()
                                     connection.write(struct.pack('<L', size))
                                     stream_face.seek(0)
