@@ -68,10 +68,10 @@ class Detection:
         reshaped = arr.T
         reshaped = np.moveaxis(reshaped, 0, -1)
         reshaped = reshaped.reshape(reshaped.shape[0], reshaped.shape[1] * reshaped.shape[2], reshaped.shape[3])
+        print(reshaped.shape)
         if reshaped.shape[2] == 1:
             img = Image.fromarray(reshaped[:,:,0], mode='L')
         elif reshaped.shape[2] == 3:
-            print(reshaped.shape)
             img = Image.fromarray(reshaped, mode='RGB')
         else:
             raise ValueError("Number of image channels should be 1 or 3. Got: {}".format(arr.shape[3]))
