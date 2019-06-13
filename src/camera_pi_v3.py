@@ -68,11 +68,12 @@ try:
                                 data = faces[0].data_image[1]
                                 data = np.reshape(data, data.shape[0])
                                 print(data.shape)
-                                size = len(faces[0].data_image[1])
+                                size = len(data)
                                 print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
                                 connection.flush()
                                 connection.write(data)
+                                connection.flush()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
