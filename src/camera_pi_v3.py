@@ -66,11 +66,10 @@ try:
                             print('Face detected %d' % len(faces))
                             if len(faces) > 0:
                                 size = len(faces[0].data_image)
-                                print('Image size %d' % size)
+                                print('Image len %d' % size)
                                 connection.write(struct.pack('<L', size))
                                 self.stream.seek(0)
                                 connection.write(faces[0].data_image)
-                                connection.flush()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
