@@ -27,9 +27,9 @@ try:
             self.start()
 
         def run(self):
-             while not self.terminated:
-                 try:
-                     with reader_lock:
+            while not self.terminated:
+                try:
+                    with reader_lock:
                         data_length = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
                         if data_length == 0:
                             continue
@@ -39,8 +39,8 @@ try:
                         data.seek(0)
                         j_data = json.loads(decoded_data)
                         print(j_data)
-                 finally:
-                     self.event.clear()
+                finally:
+                    self.event.clear()
 
 
     class ImageStreamer(threading.Thread):
@@ -85,7 +85,7 @@ try:
         global count, finish
         while finish - start < 60:
             with pool_lock:
-                if len(pool)==0:
+                if len(pool) == 0:
                     continue
                 streamer = pool.pop()
             yield streamer.stream
@@ -116,4 +116,4 @@ finally:
     client_socket.close()
 
 print('Sent %d images in %.2f seconds at %.2ffps' % (
-    count, finish-start, count / (finish-start)))
+    count, finish - start, count / (finish - start)))
