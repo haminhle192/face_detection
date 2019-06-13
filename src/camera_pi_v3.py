@@ -66,7 +66,7 @@ try:
                             faces = self.detection.find_faces(open_cv_image)
                             if len(faces) > 0:
                                 data = faces[0].data_image[1]
-                                # data = np.reshape(data, data.shape[0])
+                                data = np.reshape(data, data.shape[0])
                                 np.save(self.stream_face, data)
                                 size = self.stream_face.tell()
                                 connection.write(struct.pack('<L', size))
