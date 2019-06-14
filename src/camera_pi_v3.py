@@ -72,20 +72,6 @@ try:
                                 connection.flush()
                                 faces[0].data_image.truncate()
                                 print('Did send %d' % size)
-                                # data = faces[0].data_image[1]
-                                # data = np.reshape(data, data.shape[0])
-                                # print(data.shape)
-                                # with io.BytesIO() as stream_face:
-                                #     np.save(stream_face, data)
-                                #     size = stream_face.tell()
-                                #     connection.write(struct.pack('<L', size))
-                                #     stream_face.seek(0)
-                                #     connection.flush()
-                                #     connection.write(stream_face.read(size))
-                                #     connection.flush()
-                                #     print('Did send %d' % size)
-                                #     stream_face.seek(0)
-                                #     stream_face.truncate()
                             self.stream.seek(0)
                             self.stream.truncate()
                     finally:
