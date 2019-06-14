@@ -42,7 +42,7 @@ class Client:
                 self.reader = SocketReader(self.connection)
                 self.pool = [(SocketWriter(self.connection_lock, self.connection, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
-                camera.framerate = 5
+                camera.framerate = 10
                 time.sleep(2)
                 camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)
             finally:
@@ -57,7 +57,7 @@ class Client:
             self.pool[i].terminated = True
 
     def writers(self):
-        while self.finish - self.start < 20:
+        while self.finish - self.start < 30:
             with self.pool_lock:
                 writer = self.get_not_working_writer()
                 if writer is None:

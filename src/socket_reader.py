@@ -26,6 +26,7 @@ class SocketReader(threading.Thread):
         while not self.terminated:
             try:
                 with self._lock:
+                    print('Waiting for read stream')
                     data_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
                     if not data_len:
                         continue
