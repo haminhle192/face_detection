@@ -41,10 +41,7 @@ class SocketWriter(threading.Thread):
                             self.connection.flush()
                             self.connection.write(faces[0].data_image.read(size))
                             self.connection.flush()
-                            faces[0].data_image.truncate()
                             print('Did send %d' % size)
-                        self.stream.seek(0)
-                        self.stream.truncate()
                 finally:
                     self.stream.seek(0)
                     self.stream.truncate()
