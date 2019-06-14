@@ -56,10 +56,11 @@ class Client:
             self.connection.close()
         if self.client_socket is not None:
             self.client_socket.close()
-
-        self.reader.terminated = True
+        if self.reader.terminated is not None:
+            self.reader.terminated = True
         for i in range(1):
-            self.pool[i].terminated = True
+             if self.pool[i] is not None:
+                self.pool[i].terminated = True
 
     def writers(self):
         while self.finish - self.start < 30:
