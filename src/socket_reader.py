@@ -34,3 +34,8 @@ class SocketReader(threading.Thread):
                 self.stream.seek(0)
                 self.stream.truncate()
         print('Reader bye bye')
+
+    def terminal_reader(self):
+        self.terminated = True
+        self.connection.close()
+        self.connection = None

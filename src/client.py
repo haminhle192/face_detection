@@ -55,8 +55,7 @@ class Client:
 
     def terminal_streaming(self):
         if self.reader is not None:
-            self.reader.terminated = True
-            self.reader.connection.close()
+            self.reader.terminal_reader()
             self.reader = None
         for i in range(len(self.pool)):
              if self.pool[i] is not None:
