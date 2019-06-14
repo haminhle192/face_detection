@@ -45,13 +45,18 @@ class Client:
                 camera.framerate = 10
                 time.sleep(2)
                 camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)
+            except:
+                print('Connect to server error')
             finally:
                 print('Stop streaming')
-                self.connection.close()
-                self.client_socket.close()
                 self.terminal_streaming()
 
     def terminal_streaming(self):
+        if not self.connection:
+            self.connection.close()
+        if not self.client_socket:
+            self.client_socket.close()
+
         self.reader.terminated = True
         for i in range(1):
             self.pool[i].terminated = True
