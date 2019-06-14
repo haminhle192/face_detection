@@ -39,7 +39,7 @@ class Client:
             try:
                 self.connection = self.connect_server('192.168.1.212', 8989)
                 detector = detection.Detection()
-                self.reader = SocketReader(self.connection)
+                self.reader = SocketReader(self.connection_lock, self.connection)
                 self.pool = [(SocketWriter(self.connection_lock, self.connection, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 10
