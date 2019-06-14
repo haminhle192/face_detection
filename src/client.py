@@ -37,7 +37,7 @@ class Client:
         self.finish = time.time()
         with picamera.PiCamera() as camera:
             try:
-                self.connection = self.connect_server('192.168.1.183', 8989)
+                self.connection = self.connect_server('192.168.1.212', 8989)
                 detector = detection.Detection()
                 self.reader = SocketReader(self.connection)
                 self.pool = [(SocketWriter(self.connection_lock, self.connection, detector)) for i in range(1)]
