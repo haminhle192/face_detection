@@ -45,7 +45,8 @@ class Client:
                 camera.framerate = 10
                 time.sleep(2)
                 camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)
-            except:
+            except Exception as e:
+                print(e)
                 print('Connect to server error')
             finally:
                 print('Stop streaming')
@@ -64,18 +65,18 @@ class Client:
                 self.pool[i].terminated = True
 
     def writers(self):
-        while self.finish - self.start > 30:
-            with self.pool_lock:
-                writer = self.get_not_working_writer()
-                if writer is None:
-                    self.ignore_stream.seek(0)
-                    self.ignore_stream.truncate()
-                    yield self.ignore_stream
-                    continue
-                yield writer.stream
-                writer.event.set()
-                self.count += 1
+        while self.finish - self.start < 30:
+            writer = self.get_not_working_writer()
+            if writer is None:
+                self.ignore_stream.seek(0)
+                self.ignore_stream.truncate()
                 self.finish = time.time()
+                yield self.ignore_stream
+                continue
+            yield writer.stream
+            writer.event.set()
+            self.count += 1
+            self.finish = time.time()
 
 
     def get_not_working_writer(self):
