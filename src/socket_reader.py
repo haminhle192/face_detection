@@ -12,7 +12,7 @@ import numpy as np
 
 class SocketReader(threading.Thread):
 
-    def __init__(self, connection, detection):
+    def __init__(self, connection):
         super(SocketReader, self).__init__()
         self.connection = connection
         self.event = threading.Event()
@@ -20,31 +20,22 @@ class SocketReader(threading.Thread):
         self.detection = detection
         self.stream = io.BytesIO()
         self.terminated = False
+        self.start()
 
     def run(self):
         while not self.terminated:
             try:
                 with self._lock:
-                    image = Image.open(self.stream).convert('RGB')
-                    open_cv_image = np.array(image)
-                    open_cv_image = open_cv_image[:, :, ::-1].copy()
-                    faces = self.detection.find_faces(open_cv_image)
-                    if len(faces) > 0:
-                        if type(self.connection) is NoneType:
-                            print('Need reconnect to Server')
-                            break
-                        size = faces[0].data_image.tell()
-                        self.connection.write(struct.pack('<L', size))
-                        faces[0].data_image.seek(0)
-                        self.connection.flush()
-                        self.connection.write(faces[0].data_image.read(size))
-                        self.connection.flush()
-                        faces[0].data_image.truncate()
-                        print('Did send %d' % size)
-
+                    data_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
+                    if not data_len:
+                        continue
+                    self.stream.write(self.connection.read(data_len))
+                    text_obj = self.stream.decode('UTF-8')
+                    print(text_obj)
                     self.stream.seek(0)
                     self.stream.truncate()
             finally:
                 self.stream.seek(0)
                 self.stream.truncate()
                 self.event.clear()
+        print('Reader bye bye')
