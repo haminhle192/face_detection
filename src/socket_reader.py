@@ -30,7 +30,7 @@ class SocketReader(threading.Thread):
                     open_cv_image = open_cv_image[:, :, ::-1].copy()
                     faces = self.detection.find_faces(open_cv_image)
                     if len(faces) > 0:
-                        if type(self.connection) is None:
+                        if type(self.connection) is NoneType:
                             print('Need reconnect to Server')
                             break
                         size = faces[0].data_image.tell()

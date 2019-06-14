@@ -22,14 +22,11 @@ class Client:
         self.connection = None
         
     def connect_server(self, address, port):
-        try:
-            self.client_socket = socket.socket()
-            self.client_socket.connect((address, port))
-            connection = self.client_socket.makefile('wb')
-            print('Connected %s' % address)
-            return connection
-        finally:
-            return None
+        self.client_socket = socket.socket()
+        self.client_socket.connect((address, port))
+        connection = self.client_socket.makefile('wb')
+        print('Connected %s' % address)
+        return connection
 
     def start_camera(self):
         with picamera.PiCamera() as camera:
