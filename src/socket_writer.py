@@ -10,11 +10,11 @@ import numpy as np
 
 
 class SocketWriter(threading.Thread):
-    def __init__(self, connection, detector):
+    def __init__(self, connection_lock, connection, detector):
         super(SocketWriter, self).__init__()
         self.connection = connection
         self.event = threading.Event()
-        self._lock = threading.Lock()
+        self._lock = connection_lock
         self.detector = detector
         self.stream = io.BytesIO()
         self.terminated = False
