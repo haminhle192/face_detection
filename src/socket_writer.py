@@ -25,7 +25,7 @@ class SocketWriter(threading.Thread):
     def run(self):
         while not self.terminated:
             print('Waiting for streaming')
-            if self.event.wait():
+            if self.event.wait(1):
                 try:
                     with self._lock:
                         print('Processing frame')
