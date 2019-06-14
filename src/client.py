@@ -56,7 +56,7 @@ class Client:
             self.connection.close()
         if self.client_socket is not None:
             self.client_socket.close()
-        if self.reader.terminated is not None:
+        if self.reader is not None:
             self.reader.terminated = True
         for i in range(1):
              if self.pool[i] is not None:
