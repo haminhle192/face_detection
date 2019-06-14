@@ -52,9 +52,9 @@ class Client:
                 self.terminal_streaming()
 
     def terminal_streaming(self):
-        if not self.connection:
+        if self.connection is not None:
             self.connection.close()
-        if not self.client_socket:
+        if self.client_socket is not None:
             self.client_socket.close()
 
         self.reader.terminated = True
