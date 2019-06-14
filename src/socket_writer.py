@@ -43,7 +43,7 @@ class SocketWriter(threading.Thread):
                             self.connection.flush()
                             print('Did send %d' % size)
                 except:
-                    print('Disconnected')
+                    print('Writer disconnected')
                     self.event.clear()
                     self.terminated = True
                 finally:
