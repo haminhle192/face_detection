@@ -20,7 +20,6 @@ try:
     pool = []
     pool_lock = threading.Lock()
 
-
     class StreamerReader(threading.Thread):
         def __init__(self):
             self.event = threading.Event()
