@@ -1,23 +1,16 @@
 __author__ = 'vietbq'
 
 import struct
-import time
-import socket
 import threading
 import io
-from PIL import Image
 import detection as detection
-import numpy as np
-
 
 class SocketReader(threading.Thread):
 
-    def __init__(self, connection):
+    def __init__(self, connection_lock, connection):
         super(SocketReader, self).__init__()
         self.connection = connection
-        self.event = threading.Event()
-        self._lock = threading.Lock()
-        self.detection = detection
+        self._lock = connection_lock
         self.stream = io.BytesIO()
         self.terminated = False
         self.start()
@@ -35,12 +28,11 @@ class SocketReader(threading.Thread):
                     print(text_obj)
                     self.stream.seek(0)
                     self.stream.truncate()
-            except:
+            except Exception as e:
+                print(e)
                 print('Reader disconnected')
                 self.terminated = True
-                self.event.clear()
             finally:
                 self.stream.seek(0)
                 self.stream.truncate()
-                self.event.clear()
         print('Reader bye bye')

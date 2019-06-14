@@ -24,11 +24,9 @@ class SocketWriter(threading.Thread):
 
     def run(self):
         while not self.terminated:
-            print('Waiting for streaming')
             if self.event.wait(1):
                 try:
                     with self._lock:
-                        print('Processing frame')
                         self.working = True
                         image = Image.open(self.stream).convert('RGB')
                         open_cv_image = np.array(image)
