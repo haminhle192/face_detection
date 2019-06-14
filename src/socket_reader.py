@@ -35,6 +35,13 @@ class SocketReader(threading.Thread):
                 self.stream.truncate()
         print('Reader bye bye')
 
+    def stop(self):
+        print('Reader stopped')
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
     def terminal_reader(self):
         self.terminated = True
         self.connection.close()

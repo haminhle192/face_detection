@@ -50,12 +50,13 @@ class Client:
             finally:
                 print('Stop streaming')
                 if self.connection is not None:
+                    print('connection closed')
                     self.connection.close()
                 self.terminal_streaming()
 
     def terminal_streaming(self):
         if self.reader is not None:
-            self.reader.terminal_reader()
+            self.reader.stop()
             self.reader = None
         for i in range(len(self.pool)):
              if self.pool[i] is not None:
