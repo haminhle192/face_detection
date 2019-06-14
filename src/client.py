@@ -28,19 +28,18 @@ class Client:
     def connect_server(self, address, port):
         self.client_socket = socket.socket()
         self.client_socket.connect((address, port))
-        connection = self.client_socket.makefile('wb')
+        self.connection = self.client_socket.makefile('wb')
         print('Connected %s' % address)
-        yield connection
 
     def start_camera(self):
         self.start = time.time()
         self.finish = time.time()
-        connection = self.connect_server('192.168.1.212', 8989)
+        self.connect_server('192.168.1.212', 8989)
         with picamera.PiCamera() as camera:
             try:
                 detector = detection.Detection()
-                self.reader = SocketReader(connection)
-                self.pool = [(SocketWriter(self.connection_lock, connection, detector)) for i in range(1)]
+                self.reader = SocketReader(self.connection)
+                self.pool = [(SocketWriter(self.connection_lock, self.connection, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 10
                 time.sleep(2)
@@ -50,8 +49,8 @@ class Client:
                 print('Connect to server error')
             finally:
                 print('Stop streaming')
-                if connection is not None:
-                    connection.close()
+                if self.connection is not None:
+                    self.connection.close()
                 self.terminal_streaming()
 
     def terminal_streaming(self):
