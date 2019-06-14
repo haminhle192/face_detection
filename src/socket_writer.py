@@ -42,6 +42,10 @@ class SocketWriter(threading.Thread):
                             self.connection.write(faces[0].data_image.read(size))
                             self.connection.flush()
                             print('Did send %d' % size)
+                except:
+                    print('Disconnected')
+                    self.event.clear()
+                    self.terminated = True
                 finally:
                     self.stream.seek(0)
                     self.stream.truncate()

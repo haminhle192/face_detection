@@ -34,6 +34,10 @@ class SocketReader(threading.Thread):
                     print(text_obj)
                     self.stream.seek(0)
                     self.stream.truncate()
+            except:
+                print('Disconnected')
+                self.terminated = True
+                self.event.clear()
             finally:
                 self.stream.seek(0)
                 self.stream.truncate()
