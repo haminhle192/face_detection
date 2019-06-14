@@ -11,6 +11,7 @@ import numpy as np
 
 class SocketWriter(threading.Thread):
     def __init__(self, connection, detector):
+        super(SocketWriter, self).__init__()
         self.connection = connection
         self.event = threading.Event()
         self._lock = threading.Lock()

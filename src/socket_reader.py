@@ -13,6 +13,7 @@ import numpy as np
 class SocketReader(threading.Thread):
 
     def __init__(self, connection, detection):
+        super(SocketReader, self).__init__()
         self.connection = connection
         self.event = threading.Event()
         self._lock = threading.Lock()
