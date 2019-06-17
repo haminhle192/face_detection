@@ -20,10 +20,8 @@ class SocketReader(threading.Thread):
                     continue
                 self.stream.write(self.reader.read(data_len))
                 byte_str = self.stream.read()
-                self.stream.seek(0)
-                self.stream.truncate()
                 text_obj = byte_str.decode('UTF-8')
-                print(text_obj)
+                print('Data received %s' % text_obj)
             except Exception as e:
                 print(e)
                 self.terminated = True
@@ -35,3 +33,4 @@ class SocketReader(threading.Thread):
     def terminal_reader(self):
         self.terminated = True
         self.reader.close()
+        self.stream.close()
