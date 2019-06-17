@@ -37,7 +37,7 @@ class Client:
     def start_streaming(self):
         self.start = time.time()
         self.finish = time.time()
-        self.connect_server('192.168.1.183', 8989)
+        self.connect_server('192.168.1.212', 8989)
         with picamera.PiCamera() as camera:
             try:
                 detector = detection.Detection()
@@ -70,9 +70,9 @@ class Client:
         while self.finish - self.start < 40:
             writer = self.get_not_working_writer()
             if writer is None:
-                self.ignore_stream.seek(0)
-                self.finish = time.time()
-                yield self.ignore_stream
+                # self.ignore_stream.seek(0)
+                # self.finish = time.time()
+                # yield self.ignore_stream
                 continue
             yield writer.stream
             writer.event.set()
