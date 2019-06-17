@@ -45,6 +45,7 @@ class SocketWriter(threading.Thread):
                     self.stream.truncate()
                     self.event.clear()
                     self.working = False
+                    print('Finish frame')
         print('Writer bye bye')
         try:
             self.stream.seek(0)
