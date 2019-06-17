@@ -72,7 +72,7 @@ class Client:
                 self.ignore_stream.truncate()
                 self.finish = time.time()
                 yield self.ignore_stream
-                return
+                continue
             yield writer.stream
             writer.event.set()
             self.count += 1

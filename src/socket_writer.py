@@ -30,12 +30,12 @@ class SocketWriter(threading.Thread):
                 try:
                     with self._lock:
                         self.working = True
-                        print('Preparing for sending frame')
                         # image = Image.open(self.stream).convert('RGB')
                         # open_cv_image = np.array(image)
                         # open_cv_image = open_cv_image[:, :, ::-1].copy()
                         img_data = self.stream.reshape((640, 480, 3))
-                        img_data = img_data[:640, :480, :]
+                        # img_data = img_data[:640, :480, :]
+                        print('Start find face')
                         faces = self.detector.find_faces(img_data)
                         print('Number of face %d' % len(faces))
                         if len(faces) > 0:
