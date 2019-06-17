@@ -33,6 +33,7 @@ class SocketWriter(threading.Thread):
                         open_cv_image = np.array(image)
                         open_cv_image = open_cv_image[:, :, ::-1].copy()
                         faces = self.detector.find_faces(open_cv_image)
+                        print('Number of face %d' % len(faces))
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
                             # self.connection.write(struct.pack('<L', size))

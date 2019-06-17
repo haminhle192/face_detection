@@ -25,8 +25,9 @@ class Client:
         self.reader = None
         
     def connect_server(self, address, port):
-        self.client_socket = socket.socket()
-        self.client_socket.connect((address, port))
+        # self.client_socket = socket.socket()
+        # self.client_socket.connect((address, port))
+        self.client_socket = socket.create_connection((address, port))
         # self.connection = self.client_socket.makefile('wb')
         print('Connected %s' % address)
 
