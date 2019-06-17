@@ -10,24 +10,27 @@ class SocketReader(threading.Thread):
         self.reader = reader_stream
         self.stream = io.BytesIO()
         self.terminated = False
+        self._lock = threading.Lock()
 
     def run(self):
         while not self.terminated:
-            try:
-                print('Waiting for read stream')
-                data_len = struct.unpack('<L', self.reader.read(struct.calcsize('<L')))[0]
-                if not data_len:
-                    continue
-                self.stream.write(self.reader.read(data_len))
-                byte_str = self.stream.read()
-                text_obj = byte_str.decode('UTF-8')
-                print('Data received %s' % text_obj)
-            except Exception as e:
-                print(e)
-                self.terminated = True
-            finally:
-                self.stream.seek(0)
-                self.stream.truncate()
+            with self._lock:
+                try:
+                    print('Waiting for read stream')
+                    data_len = struct.unpack('<L', self.reader.read(struct.calcsize('<L')))[0]
+                    if not data_len:
+                        continue
+                    self.stream.write(self.reader.read(data_len))
+                    self.stream.seek(0)
+                    byte_str = self.stream.read()
+                    text_obj = byte_str.decode('utf-8')
+                    print('Data len %s' % data_len)
+                    print('Data received %s' % text_obj)
+                    self.stream.seek(0)
+                    self.stream.truncate()
+                except Exception as e:
+                    print(e)
+                    self.terminated = True
         print('Reader bye bye!')
 
     def terminal_reader(self):
