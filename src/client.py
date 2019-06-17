@@ -45,7 +45,7 @@ class Client:
                 camera.resolution = (640, 480)
                 camera.framerate = 10
                 time.sleep(2)
-                camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)
+                camera.capture_sequence(self.writers(), 'rgb', use_video_port=True)
             except Exception as e:
                 print(e)
                 print('Connect to server error')
@@ -64,20 +64,19 @@ class Client:
             self.client_socket.close()
 
     def writers(self):
-        with self.connection_lock:
-            while self.finish - self.start < 30:
-                writer = self.get_not_working_writer()
-                if writer is None:
-                    print('Ignore frame')
-                    self.ignore_stream.seek(0)
-                    # self.ignore_stream.truncate()
-                    self.finish = time.time()
-                    yield self.ignore_stream
-                    continue
-                yield writer.stream
-                writer.event.set()
-                self.count += 1
+        while self.finish - self.start < 30:
+            writer = self.get_not_working_writer()
+            if writer is None:
+                print('Ignore frame')
+                self.ignore_stream.seek(0)
+                self.ignore_stream.truncate()
                 self.finish = time.time()
+                yield self.ignore_stream
+                return
+            yield writer.stream
+            writer.event.set()
+            self.count += 1
+            self.finish = time.time()
 
 
     def get_not_working_writer(self):

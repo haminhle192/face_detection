@@ -16,7 +16,8 @@ class SocketWriter(threading.Thread):
         self.event = threading.Event()
         self._lock = connection_lock
         self.detector = detector
-        self.stream = io.BytesIO()
+        # self.stream = io.BytesIO()
+        self.image = np.empty((640, 480, 3), dtype=np.uint8)
         self.terminated = False
         self.working = False
         self.start()
@@ -29,10 +30,10 @@ class SocketWriter(threading.Thread):
                     with self._lock:
                         self.working = True
                         print('Preparing for sending frame')
-                        image = Image.open(self.stream).convert('RGB')
-                        open_cv_image = np.array(image)
-                        open_cv_image = open_cv_image[:, :, ::-1].copy()
-                        faces = self.detector.find_faces(open_cv_image)
+                        # image = Image.open(self.stream).convert('RGB')
+                        # open_cv_image = np.array(image)
+                        # open_cv_image = open_cv_image[:, :, ::-1].copy()
+                        faces = self.detector.find_faces(self.image)
                         print('Number of face %d' % len(faces))
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
@@ -44,13 +45,14 @@ class SocketWriter(threading.Thread):
                             self.connection.sendall(faces[0].data_image.read(size))
                             # self.connection.flush()
                             print('Did send %d' % size)
-                except Exception as e:
+                except IOError as e:
                     print(e)
-                    print('Writer disconnected')
-                    self.event.clear()
-                    self.terminated = True
+                    # print('Writer disconnected')
+                    # self.event.clear()
+                    # self.terminated = True
                 finally:
                     print('Finish frame')
+                    self.image = None
                     self.stream.seek(0)
                     self.stream.truncate()
                     self.event.clear()
