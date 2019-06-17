@@ -34,11 +34,13 @@ class SocketWriter(threading.Thread):
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
-                            self.connection.write(struct.pack('<L', size))
+                            # self.connection.write(struct.pack('<L', size))
+                            self.connection.sendall(struct.pack('L', size))
                             faces[0].data_image.seek(0)
-                            self.connection.flush()
-                            self.connection.write(faces[0].data_image.read(size))
-                            self.connection.flush()
+                            # self.connection.flush()
+                            # self.connection.write(faces[0].data_image.read(size))
+                            self.connection.sendall(faces[0].data_image.read(size))
+                            # self.connection.flush()
                             print('Did send %d' % size)
                 except Exception as e:
                     print(e)
