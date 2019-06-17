@@ -23,6 +23,7 @@ class Client:
         self.start = 0
         self.finish = 0
         self.reader = None
+        self.camera = None
         
     def connect_server(self, address, port):
         # self.client_socket = socket.socket()
@@ -37,6 +38,7 @@ class Client:
         self.connect_server('192.168.1.183', 8989)
         with picamera.PiCamera() as camera:
             try:
+                self.camera = camera
                 detector = detection.Detection()
                 self.reader = SocketReader(self.client_socket)
                 self.reader.start()
@@ -45,7 +47,10 @@ class Client:
                 camera.resolution = (640, 480)
                 camera.framerate = 10
                 time.sleep(2)
-                camera.capture_sequence(self.writers(), 'rgb', use_video_port=True)
+                for writer in enumerate(camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)):
+                    print(type(writer))
+                    # writer.event.set()
+
             except Exception as e:
                 print(e)
                 print('Connect to server error')
@@ -65,6 +70,7 @@ class Client:
 
     def writers(self):
         while self.finish - self.start < 30:
+            print('Getting frame')
             writer = self.get_not_working_writer()
             if writer is None:
                 print('Ignore frame')
@@ -74,12 +80,12 @@ class Client:
                 yield self.ignore_stream
                 continue
             yield writer.stream
-            writer.event.set()
+            # writer.event.set()
             self.count += 1
             self.finish = time.time()
             continue
-        yield None
-
+        self.camera.close()
+        yield self.ignore_stream
 
     def get_not_working_writer(self):
         for i in range(1):
