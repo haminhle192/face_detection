@@ -31,7 +31,6 @@ class SocketReader(threading.Thread):
                     j_obj = json.loads(text_obj)
                     self.handle_light(j_obj)
                     self.stream.seek(0)
-                    self.stream.truncate()
                 except Exception as e:
                     print(e)
                     self.terminated = True
@@ -41,6 +40,7 @@ class SocketReader(threading.Thread):
     def terminal_reader(self):
         self.terminated = True
         self.reader.close()
+        self.stream.truncate()
         self.stream.close()
 
     def handle_light(self, j_object):

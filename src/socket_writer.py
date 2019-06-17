@@ -51,6 +51,7 @@ class SocketWriter(threading.Thread):
         try:
             self.stream.seek(0)
             self.stream.truncate()
+            self.stream.close()
             self.writer.write(struct.pack('<L', 0))
             self.writer.close()
         except Exception as e:
