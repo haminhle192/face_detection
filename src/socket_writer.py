@@ -28,6 +28,7 @@ class SocketWriter(threading.Thread):
                 try:
                     with self._lock:
                         self.working = True
+                        print('Preparing for sending frame')
                         image = Image.open(self.stream).convert('RGB')
                         open_cv_image = np.array(image)
                         open_cv_image = open_cv_image[:, :, ::-1].copy()
@@ -48,6 +49,7 @@ class SocketWriter(threading.Thread):
                     self.event.clear()
                     self.terminated = True
                 finally:
+                    print('Finish frame')
                     self.stream.seek(0)
                     self.stream.truncate()
                     self.event.clear()
