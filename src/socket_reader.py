@@ -18,7 +18,7 @@ class SocketReader(threading.Thread):
                 print('Waiting for read stream')
                 can_frame_size = struct.calcsize('L')
                 data_len, addr = self.connection.recvfrom(can_frame_size)
-                print('Received: data_len=%d, addr=%s' % (data_len, addr))
+                print('Received: data_len=%s, addr=%s' % (data_len, addr))
                 # data_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
                 if not data_len:
                     continue

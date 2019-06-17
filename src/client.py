@@ -49,9 +49,6 @@ class Client:
                 print('Connect to server error')
             finally:
                 print('Stop streaming')
-                if self.client_socket is not None:
-                    print('connection closed')
-                    self.client_socket.close()
                 self.terminal_streaming()
 
     def terminal_streaming(self):
