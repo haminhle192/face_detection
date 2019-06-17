@@ -20,21 +20,22 @@ class SocketReader(threading.Thread):
     def run(self):
         print('Reader is running')
         while not self.terminated:
-            with self._lock:
-                try:
-                    data_len = struct.unpack('<L', self.reader.read(struct.calcsize('<L')))[0]
-                    if not data_len:
-                        continue
-                    self.stream.write(self.reader.read(data_len))
-                    self.stream.seek(0)
-                    byte_str = self.stream.read()
-                    text_obj = byte_str.decode()
-                    j_obj = json.loads(text_obj)
-                    self.handle_light(j_obj)
-                    self.stream.seek(0)
-                except Exception as e:
-                    print(e)
-                    # self.terminated = True
+            try:
+                data_len = struct.unpack('<L', self.reader.read(struct.calcsize('<L')))[0]
+                if not data_len:
+                    continue
+                self.stream.write(self.reader.read(data_len))
+                self.stream.seek(0)
+                byte_str = self.stream.read()
+                text_obj = byte_str.decode()
+                j_obj = json.loads(text_obj)
+                self.handle_light(j_obj)
+                self.stream.seek(0)
+            except Exception as e:
+                print(e)
+            finally:
+                self.stream.truncate()
+                # self.terminated = True
         self.gpio_manager.cleanup()
         print('Reader bye bye!')
 

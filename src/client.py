@@ -72,6 +72,7 @@ class Client:
         while self.finish - self.start < 40:
             writer = self.get_not_working_writer()
             if writer is None:
+                print('Ignore frame')
                 self.ignore_stream.seek(0)
                 self.ignore_stream.truncate()
                 self.finish = time.time()

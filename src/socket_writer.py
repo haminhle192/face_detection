@@ -36,13 +36,13 @@ class SocketWriter(threading.Thread):
                             self.writer.flush()
                             self.writer.write(faces[0].data_image.read(size))
                             self.writer.flush()
-                            print('Did send %d' % size)
                 except Exception as e:
                     print(e)
                     # print('Writer disconnected')
                     # self.terminated = True
                 finally:
                     self.stream.seek(0)
+                    self.stream.truncate()
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
