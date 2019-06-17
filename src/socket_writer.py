@@ -39,8 +39,8 @@ class SocketWriter(threading.Thread):
                             print('Did send %d' % size)
                 except Exception as e:
                     print(e)
-                    print('Writer disconnected')
-                    self.terminated = True
+                    # print('Writer disconnected')
+                    # self.terminated = True
                 finally:
                     self.stream.seek(0)
                     self.event.clear()
