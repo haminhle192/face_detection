@@ -45,8 +45,10 @@ class SocketReader(threading.Thread):
 
     def handle_light(self, j_object):
         print(j_object)
+        print('Code %d' % j_object['code'])
         if j_object['code'] == 0:
             data = j_object['data']
+            print(type(data))
             if len(data) > 0:
                 if data[0]['id'] == 3:
                     print('Turn on the light')
