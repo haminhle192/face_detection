@@ -34,7 +34,7 @@ class SocketReader(threading.Thread):
             except Exception as e:
                 print(e)
             finally:
-                if self.stream.closed() is False:
+                if not self.stream.closed():
                     self.stream.truncate()
         self.gpio_manager.cleanup()
         print('Reader bye bye!')
