@@ -18,11 +18,11 @@ class SocketWriter(threading.Thread):
         self.detector = detector
         self.stream = io.BytesIO()
         self.terminated = False
-        self.disconnect = False
         self.working = False
         self.start()
 
     def run(self):
+        print('Start writer')
         while not self.terminated:
             if self.event.wait(1):
                 try:

@@ -19,7 +19,6 @@ class Client:
         self.terminated = False
         self.ignore_stream = io.BytesIO()
         self.client_socket = None
-        # self.connection = None
         self.count = 0
         self.start = 0
         self.finish = 0
@@ -39,6 +38,7 @@ class Client:
             try:
                 detector = detection.Detection()
                 self.reader = SocketReader(self.client_socket)
+                self.reader.start()
                 print('Start run Thread writer')
                 self.pool = [(SocketWriter(self.connection_lock, self.client_socket, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
@@ -65,6 +65,7 @@ class Client:
         while self.finish - self.start < 30:
             writer = self.get_not_working_writer()
             if writer is None:
+                print('Ignore frame')
                 self.ignore_stream.seek(0)
                 self.ignore_stream.truncate()
                 self.finish = time.time()

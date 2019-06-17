@@ -10,7 +10,6 @@ class SocketReader(threading.Thread):
         self.connection = connection
         self.stream = io.BytesIO()
         self.terminated = False
-        self.start()
 
     def run(self):
         while not self.terminated:
