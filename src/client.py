@@ -70,14 +70,16 @@ class Client:
         while self.finish - self.start < 40:
             writer = self.get_not_working_writer()
             if writer is None:
-                # self.ignore_stream.seek(0)
-                # self.finish = time.time()
-                # yield self.ignore_stream
-                continue
-            yield writer.stream
-            writer.event.set()
-            self.count += 1
-            self.finish = time.time()
+                self.ignore_stream.seek(0)
+                self.ignore_stream.truncate()
+                self.finish = time.time()
+                yield self.ignore_stream
+            else:
+                writer.stream.seek(0)
+                yield writer.stream
+                writer.event.set()
+                self.count += 1
+                self.finish = time.time()
 
     def get_not_working_writer(self):
         for i in range(1):
