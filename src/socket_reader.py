@@ -48,6 +48,6 @@ class SocketReader(threading.Thread):
             data = j_object['data']
             print(type(data))
             if len(data) > 0:
-                print('Face ID %d' % data[0]['id'])
-                if data[0]['id'] == 3:
+                face_id = int(j_object['data'][0]['id'])
+                if face_id == 3:
                     print('Turn on the light')
