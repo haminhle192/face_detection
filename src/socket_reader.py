@@ -25,10 +25,11 @@ class SocketReader(threading.Thread):
                 self.stream.truncate()
             except Exception as e:
                 print(e)
+                self.terminated = True
             finally:
                 self.stream.seek(0)
                 self.stream.truncate()
-        print('Reader bye bye')
+        print('Reader bye bye!')
 
     def terminal_reader(self):
         self.terminated = True
