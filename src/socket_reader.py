@@ -34,8 +34,8 @@ class SocketReader(threading.Thread):
             except Exception as e:
                 print(e)
             finally:
-                self.stream.truncate()
-                # self.terminated = True
+                if self.stream.closed() is False:
+                    self.stream.truncate()
         self.gpio_manager.cleanup()
         print('Reader bye bye!')
 
@@ -53,3 +53,4 @@ class SocketReader(threading.Thread):
                 face_id = int(j_object['data'][0]['id'])
                 if face_id == 3:
                     print('Turn on the light')
+                    self.gpio_manager.turn_on()
