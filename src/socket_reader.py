@@ -5,12 +5,11 @@ import threading
 import io
 
 class SocketReader(threading.Thread):
-    def __init__(self, reader):
+    def __init__(self, reader_stream):
         super(SocketReader, self).__init__()
-        self.reader = reader
+        self.reader = reader_stream
         self.stream = io.BytesIO()
         self.terminated = False
-        self.start()
 
     def run(self):
         while not self.terminated:

@@ -19,18 +19,18 @@ class Client:
         self.terminated = False
         self.ignore_stream = io.BytesIO()
         self.client_socket = None
-        self.writer = None
+        self.writer_stream = None
+        self.reader_stream = None
         self.reader = None
         self.count = 0
         self.start = 0
         self.finish = 0
-        self.reader = None
-        
+
     def connect_server(self, address, port):
         self.client_socket = socket.socket()
         self.client_socket.connect((address, port))
-        self.writer = self.client_socket.makefile('wb')
-        self.reader = self.client_socket.makefile('rb')
+        self.writer_stream = self.client_socket.makefile('wb')
+        self.reader_stream = self.client_socket.makefile('rb')
         print('Connected %s' % address)
 
     def start_camera(self):
@@ -40,8 +40,9 @@ class Client:
         with picamera.PiCamera() as camera:
             try:
                 detector = detection.Detection()
-                SocketReader(self.reader)
-                self.pool = [(SocketWriter(self.connection_lock, self.writer, detector)) for i in range(1)]
+                self.reader = SocketReader(self.reader_stream)
+                self.reader.start()
+                self.pool = [(SocketWriter(self.connection_lock, self.writer_stream, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 10
                 time.sleep(2)
@@ -58,11 +59,11 @@ class Client:
         if self.reader is not None:
             self.reader.terminal_reader()
         for i in range(len(self.pool)):
-             if self.pool[i] is not None:
+            if self.pool[i] is not None:
                 self.pool[i].terminated = True
+        self.writer_stream.close()
+        self.reader_stream.close()
         self.client_socket.close()
-        self.writer.close()
-        self.reader.close()
 
     def writers(self):
         while self.finish - self.start < 30:
