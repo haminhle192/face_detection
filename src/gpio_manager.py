@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 import time
 
 light_1_pin = 11
-light_2_pin = 11
+light_2_pin = 12
 
 class GPIO_Manager:
 
