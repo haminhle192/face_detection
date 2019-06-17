@@ -38,8 +38,6 @@ class SocketWriter(threading.Thread):
                             self.writer.flush()
                 except Exception as e:
                     print(e)
-                    # print('Writer disconnected')
-                    # self.terminated = True
                 finally:
                     self.stream.seek(0)
                     self.stream.truncate()
