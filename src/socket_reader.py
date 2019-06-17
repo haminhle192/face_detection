@@ -51,5 +51,4 @@ class SocketReader(threading.Thread):
             if len(data) > 0:
                 face_id = int(j_object['data'][0]['id'])
                 if face_id == 3:
-                    print('Turn on the light')
                     self.gpio_manager.turn_on()

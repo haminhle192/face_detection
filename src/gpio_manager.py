@@ -3,7 +3,7 @@ __author__ = 'vietbq'
 import RPi.GPIO as GPIO
 import time
 
-light_1_pin = 12
+light_1_pin = 11
 light_2_pin = 11
 
 class GPIO_Manager:
@@ -20,8 +20,12 @@ class GPIO_Manager:
 
     def turn_on(self):
         if not self.on:
+            print('Turn on the light')
+            self.on = True
             self.start_on = time.time()
             GPIO.output(light_1_pin, GPIO.HIGH)
+        else:
+            print('The light was on')
 
     def turn_off(self):
         GPIO.output(light_1_pin, GPIO.LOW)
