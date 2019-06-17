@@ -17,7 +17,8 @@ class SocketWriter(threading.Thread):
         self._lock = connection_lock
         self.detector = detector
         # self.stream = io.BytesIO()
-        self.stream = np.empty((640, 480, 3), dtype=np.uint8)
+        # self.stream = np.empty((640, 480, 3), dtype=np.uint8)
+        self.stream = np.empty((640 * 480 * 3,), dtype=np.uint8)
         self.terminated = False
         self.working = False
         self.start()
@@ -33,7 +34,9 @@ class SocketWriter(threading.Thread):
                         # image = Image.open(self.stream).convert('RGB')
                         # open_cv_image = np.array(image)
                         # open_cv_image = open_cv_image[:, :, ::-1].copy()
-                        faces = self.detector.find_faces(self.stream)
+                        img_data = self.stream.reshape((640, 480, 3))
+                        img_data = img_data[:640, :480, :]
+                        faces = self.detector.find_faces(img_data)
                         print('Number of face %d' % len(faces))
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
@@ -45,14 +48,16 @@ class SocketWriter(threading.Thread):
                             self.connection.sendall(faces[0].data_image.read(size))
                             # self.connection.flush()
                             print('Did send %d' % size)
-                except IOError as e:
-                    print(e)
+                # except IOError as e:
+                #     print(e)
                     # print('Writer disconnected')
                     # self.event.clear()
                     # self.terminated = True
                 finally:
                     print('Finish frame')
-                    self.stream = None
+                    # self.stream = None
+                    # self.stream = np.reshape(self.stream, 640 * 480 * 3)
+                    self.stream = self.stream.reshape(640 * 480 * 3)
                     # self.stream.seek(0)
                     # self.stream.truncate()
                     self.event.clear()
