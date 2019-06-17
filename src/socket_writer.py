@@ -49,5 +49,8 @@ class SocketWriter(threading.Thread):
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
-        # self.writer.write(struct.pack('<L', 0))
-        # self.writer.close()
+        try:
+            self.writer.write(struct.pack('<L', 0))
+            self.writer.close()
+        except Exception as e:
+            print(e)
