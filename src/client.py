@@ -33,7 +33,7 @@ class Client:
         self.reader_stream = self.client_socket.makefile('rb')
         print('Connected %s' % address)
 
-    def start_camera(self):
+    def start_streaming(self):
         self.start = time.time()
         self.finish = time.time()
         self.connect_server('192.168.1.183', 8989)
@@ -49,8 +49,8 @@ class Client:
                 camera.capture_sequence(self.writers(), 'jpeg', use_video_port=True)
             except Exception as e:
                 print(e)
-                print('Connect to server error')
             finally:
+                print('Stop camera')
                 camera.close()
                 print('Stop streaming')
                 self.terminal_streaming()
@@ -78,7 +78,7 @@ class Client:
             writer.event.set()
             self.count += 1
             self.finish = time.time()
-
+        yield None
 
     def get_not_working_writer(self):
         for i in range(1):
@@ -87,4 +87,4 @@ class Client:
         return None
 
 client = Client()
-client.start_camera()
+client.start_streaming()

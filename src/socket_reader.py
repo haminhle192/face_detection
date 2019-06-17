@@ -25,8 +25,6 @@ class SocketReader(threading.Thread):
                 self.stream.truncate()
             except Exception as e:
                 print(e)
-                print('Reader disconnected')
-                self.terminated = True
             finally:
                 self.stream.seek(0)
                 self.stream.truncate()
@@ -34,3 +32,4 @@ class SocketReader(threading.Thread):
 
     def terminal_reader(self):
         self.terminated = True
+        self.reader.close()
