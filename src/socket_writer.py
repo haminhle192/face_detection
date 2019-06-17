@@ -42,7 +42,6 @@ class SocketWriter(threading.Thread):
                 except Exception as e:
                     print(e)
                     print('Writer disconnected')
-                    self.event.clear()
                     self.terminated = True
                 finally:
                     self.stream.seek(0)
@@ -50,5 +49,5 @@ class SocketWriter(threading.Thread):
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
-        self.writer.write(struct.pack('<L', 0))
-        self.writer.close()
+        # self.writer.write(struct.pack('<L', 0))
+        # self.writer.close()
