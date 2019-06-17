@@ -40,7 +40,7 @@ class Client:
         with picamera.PiCamera() as camera:
             try:
                 detector = detection.Detection()
-                self.reader = SocketReader(self.reader)
+                SocketReader(self.reader)
                 self.pool = [(SocketWriter(self.connection_lock, self.writer, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 10
