@@ -34,16 +34,15 @@ class SocketReader(threading.Thread):
             except Exception as e:
                 print(e)
             finally:
-                if not self.stream.closed():
-                    self.stream.truncate()
+                self.stream.truncate()
         self.gpio_manager.cleanup()
+        self.stream.close()
         print('Reader bye bye!')
 
     def terminal_reader(self):
         self.terminated = True
         self.reader.close()
-        self.stream.truncate()
-        self.stream.close()
+
 
     def handle_light(self, j_object):
         print(j_object)
