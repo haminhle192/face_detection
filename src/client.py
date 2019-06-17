@@ -39,6 +39,7 @@ class Client:
             try:
                 detector = detection.Detection()
                 self.reader = SocketReader(self.client_socket)
+                print('Start run Thread writer')
                 self.pool = [(SocketWriter(self.connection_lock, self.client_socket, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 10
@@ -53,8 +54,7 @@ class Client:
 
     def terminal_streaming(self):
         if self.reader is not None:
-            self.reader.stop()
-            self.reader = None
+            self.reader.terminal_reader()
         for i in range(len(self.pool)):
              if self.pool[i] is not None:
                 self.pool[i].terminated = True

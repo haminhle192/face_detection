@@ -18,6 +18,8 @@ class SocketReader(threading.Thread):
                 print('Waiting for read stream')
                 can_frame_size = struct.calcsize('L')
                 data_len, addr = self.connection.recvfrom(can_frame_size)
+                if addr is None:
+                    self.terminated = True
                 print('Received: data_len=%s, addr=%s' % (data_len, addr))
                 # data_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
                 if not data_len:
@@ -39,5 +41,3 @@ class SocketReader(threading.Thread):
     def terminal_reader(self):
         print('Reader stopped')
         self.terminated = True
-        self.connection.close()
-        self.connection = None
