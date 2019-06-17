@@ -17,7 +17,7 @@ class SocketWriter(threading.Thread):
         self._lock = connection_lock
         self.detector = detector
         # self.stream = io.BytesIO()
-        self.image = np.empty((640, 480, 3), dtype=np.uint8)
+        self.stream = np.empty((640, 480, 3), dtype=np.uint8)
         self.terminated = False
         self.working = False
         self.start()
@@ -33,7 +33,7 @@ class SocketWriter(threading.Thread):
                         # image = Image.open(self.stream).convert('RGB')
                         # open_cv_image = np.array(image)
                         # open_cv_image = open_cv_image[:, :, ::-1].copy()
-                        faces = self.detector.find_faces(self.image)
+                        faces = self.detector.find_faces(self.stream)
                         print('Number of face %d' % len(faces))
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
@@ -52,9 +52,9 @@ class SocketWriter(threading.Thread):
                     # self.terminated = True
                 finally:
                     print('Finish frame')
-                    self.image = None
-                    self.stream.seek(0)
-                    self.stream.truncate()
+                    self.stream = None
+                    # self.stream.seek(0)
+                    # self.stream.truncate()
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
