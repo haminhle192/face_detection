@@ -8,7 +8,6 @@ import io
 from PIL import Image
 import numpy as np
 
-
 class SocketWriter(threading.Thread):
     def __init__(self, connection_lock, writer, detector):
         super(SocketWriter, self).__init__()
@@ -45,11 +44,12 @@ class SocketWriter(threading.Thread):
                     self.terminated = True
                 finally:
                     self.stream.seek(0)
-                    self.stream.truncate()
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
         try:
+            self.stream.seek(0)
+            self.stream.truncate()
             self.writer.write(struct.pack('<L', 0))
             self.writer.close()
         except Exception as e:
