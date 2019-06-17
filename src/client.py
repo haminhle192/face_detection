@@ -77,6 +77,8 @@ class Client:
             writer.event.set()
             self.count += 1
             self.finish = time.time()
+            continue
+        yield None
 
 
     def get_not_working_writer(self):

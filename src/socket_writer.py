@@ -34,7 +34,7 @@ class SocketWriter(threading.Thread):
                         # open_cv_image = np.array(image)
                         # open_cv_image = open_cv_image[:, :, ::-1].copy()
                         img_data = self.stream.reshape((640, 480, 3))
-                        # img_data = img_data[:640, :480, :]
+                        img_data = img_data[:640, :480, :]
                         print('Start find face')
                         faces = self.detector.find_faces(img_data)
                         print('Number of face %d' % len(faces))
