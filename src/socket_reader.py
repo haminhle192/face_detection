@@ -19,10 +19,11 @@ class SocketReader(threading.Thread):
                 if not data_len:
                     continue
                 self.stream.write(self.reader.read(data_len))
-                text_obj = self.stream.decode('UTF-8')
-                print(text_obj)
+                byte_str = self.stream.read()
                 self.stream.seek(0)
                 self.stream.truncate()
+                text_obj = byte_str.decode('UTF-8')
+                print(text_obj)
             except Exception as e:
                 print(e)
                 self.terminated = True
