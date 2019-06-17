@@ -56,12 +56,13 @@ class Client:
 
     def terminal_streaming(self):
         if self.reader is not None:
-            self.reader.close()
+            self.reader.terminal_reader()
         for i in range(len(self.pool)):
              if self.pool[i] is not None:
                 self.pool[i].terminated = True
-        if self.client_socket is not None:
-            self.client_socket.close()
+        self.client_socket.close()
+        self.writer.close()
+        self.reader.close()
 
     def writers(self):
         while self.finish - self.start < 30:

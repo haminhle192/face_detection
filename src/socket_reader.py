@@ -35,5 +35,3 @@ class SocketReader(threading.Thread):
 
     def terminal_reader(self):
         self.terminated = True
-        self.reader.close()
-        self.reader = None

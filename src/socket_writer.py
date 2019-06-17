@@ -18,7 +18,6 @@ class SocketWriter(threading.Thread):
         self.detector = detector
         self.stream = io.BytesIO()
         self.terminated = False
-        self.disconnect = False
         self.working = False
         self.start()
 
