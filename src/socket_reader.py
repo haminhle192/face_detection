@@ -18,6 +18,7 @@ class SocketReader(threading.Thread):
 
 
     def run(self):
+        print('Reader is running')
         while not self.terminated:
             with self._lock:
                 try:

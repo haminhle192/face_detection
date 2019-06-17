@@ -13,7 +13,6 @@ class SocketWriter(threading.Thread):
         super(SocketWriter, self).__init__()
         self.writer = writer
         self.event = threading.Event()
-        self._lock = connection_lock
         self.detector = detector
         self.stream = io.BytesIO()
         self.terminated = False
@@ -21,23 +20,23 @@ class SocketWriter(threading.Thread):
         self.start()
 
     def run(self):
+        print('Writer is running')
         while not self.terminated:
             if self.event.wait(1):
                 try:
-                    with self._lock:
-                        self.working = True
-                        with Image.open(self.stream).convert('RGB') as image:
-                            open_cv_image = np.array(image)
-                            open_cv_image = open_cv_image[:, :, ::-1].copy()
-                            faces = self.detector.find_faces(open_cv_image)
-                            if len(faces) > 0:
-                                size = faces[0].data_image.tell()
-                                self.writer.write(struct.pack('<L', size))
-                                faces[0].data_image.seek(0)
-                                self.writer.flush()
-                                self.writer.write(faces[0].data_image.read(size))
-                                self.writer.flush()
-                                print('Did send %d' % size)
+                    self.working = True
+                    with Image.open(self.stream).convert('RGB') as image:
+                        open_cv_image = np.array(image)
+                        open_cv_image = open_cv_image[:, :, ::-1].copy()
+                        faces = self.detector.find_faces(open_cv_image)
+                        if len(faces) > 0:
+                            size = faces[0].data_image.tell()
+                            self.writer.write(struct.pack('<L', size))
+                            faces[0].data_image.seek(0)
+                            self.writer.flush()
+                            self.writer.write(faces[0].data_image.read(size))
+                            self.writer.flush()
+                            print('Did send %d' % size)
                 except Exception as e:
                     print(e)
                     print('Writer disconnected')

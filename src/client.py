@@ -40,8 +40,10 @@ class Client:
         self.connect_server('192.168.1.212', 8989)
         with picamera.PiCamera() as camera:
             try:
+                print('Starting load model')
                 detector = detection.Detection()
                 detector.find_faces(np.empty((160, 160, 3), dtype=np.uint8))
+                print('Did load model')
                 self.reader = SocketReader(self.reader_stream)
                 self.reader.start()
                 self.pool = [(SocketWriter(self.connection_lock, self.writer_stream, detector)) for i in range(1)]
