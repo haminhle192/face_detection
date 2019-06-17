@@ -44,6 +44,7 @@ class SocketReader(threading.Thread):
         self.stream.close()
 
     def handle_light(self, j_object):
+        print(j_object)
         if j_object['code'] == 0:
             data = j_object['data']
             if len(data) > 0:
