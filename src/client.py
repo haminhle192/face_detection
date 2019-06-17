@@ -50,6 +50,7 @@ class Client:
                 print('Connect to server error')
             finally:
                 print('Stop streaming')
+                camera.close()
                 self.terminal_streaming()
 
     def terminal_streaming(self):
@@ -67,7 +68,7 @@ class Client:
             if writer is None:
                 print('Ignore frame')
                 self.ignore_stream.seek(0)
-                self.ignore_stream.truncate()
+                # self.ignore_stream.truncate()
                 self.finish = time.time()
                 yield self.ignore_stream
                 continue
