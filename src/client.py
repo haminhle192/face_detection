@@ -41,7 +41,7 @@ class Client:
         with picamera.PiCamera() as camera:
             try:
                 detector = detection.Detection()
-                self.detector.find_faces(np.empty((160, 160, 3), dtype=np.uint8))
+                detector.find_faces(np.empty((160, 160, 3), dtype=np.uint8))
                 self.reader = SocketReader(self.reader_stream)
                 self.reader.start()
                 self.pool = [(SocketWriter(self.connection_lock, self.writer_stream, detector)) for i in range(1)]
