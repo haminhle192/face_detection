@@ -3,13 +3,11 @@ __author__ = 'vietbq'
 import struct
 import threading
 import io
-import detection as detection
-
 
 class SocketReader(threading.Thread):
-    def __init__(self, connection):
+    def __init__(self, reader):
         super(SocketReader, self).__init__()
-        self.connection = connection
+        self.reader = reader
         self.stream = io.BytesIO()
         self.terminated = False
         self.start()
@@ -18,10 +16,10 @@ class SocketReader(threading.Thread):
         while not self.terminated:
             try:
                 print('Waiting for read stream')
-                data_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
+                data_len = struct.unpack('<L', self.reader.read(struct.calcsize('<L')))[0]
                 if not data_len:
                     continue
-                self.stream.write(self.connection.read(data_len))
+                self.stream.write(self.reader.read(data_len))
                 text_obj = self.stream.decode('UTF-8')
                 print(text_obj)
                 self.stream.seek(0)
@@ -35,14 +33,7 @@ class SocketReader(threading.Thread):
                 self.stream.truncate()
         print('Reader bye bye')
 
-    def stop(self):
-        print('Reader stopped')
-        self._stop_event.set()
-
-    def stopped(self):
-        return self._stop_event.is_set()
-
     def terminal_reader(self):
         self.terminated = True
-        self.connection.close()
-        self.connection = None
+        self.reader.close()
+        self.reader = None

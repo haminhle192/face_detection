@@ -10,9 +10,9 @@ import numpy as np
 
 
 class SocketWriter(threading.Thread):
-    def __init__(self, connection_lock, connection, detector):
+    def __init__(self, connection_lock, writer, detector):
         super(SocketWriter, self).__init__()
-        self.connection = connection
+        self.writer = writer
         self.event = threading.Event()
         self._lock = connection_lock
         self.detector = detector
@@ -34,11 +34,11 @@ class SocketWriter(threading.Thread):
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
                             size = faces[0].data_image.tell()
-                            self.connection.write(struct.pack('<L', size))
+                            self.writer.write(struct.pack('<L', size))
                             faces[0].data_image.seek(0)
-                            self.connection.flush()
-                            self.connection.write(faces[0].data_image.read(size))
-                            self.connection.flush()
+                            self.writer.flush()
+                            self.writer.write(faces[0].data_image.read(size))
+                            self.writer.flush()
                             print('Did send %d' % size)
                 except Exception as e:
                     print(e)
