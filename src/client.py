@@ -65,11 +65,10 @@ class Client:
         self.client_socket.close()
 
     def writers(self):
-        while self.finish - self.start < 30:
+        while self.finish - self.start < 40:
             writer = self.get_not_working_writer()
             if writer is None:
                 self.ignore_stream.seek(0)
-                self.ignore_stream.truncate()
                 self.finish = time.time()
                 yield self.ignore_stream
                 continue
@@ -77,6 +76,7 @@ class Client:
             writer.event.set()
             self.count += 1
             self.finish = time.time()
+        yield None
 
     def get_not_working_writer(self):
         for i in range(1):
