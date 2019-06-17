@@ -35,6 +35,7 @@ class SocketReader(threading.Thread):
                 except Exception as e:
                     print(e)
                     self.terminated = True
+        self.gpio_manager.cleanup()
         print('Reader bye bye!')
 
     def terminal_reader(self):
