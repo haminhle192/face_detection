@@ -61,7 +61,6 @@ class Client:
         for i in range(len(self.pool)):
             if self.pool[i] is not None:
                 self.pool[i].terminated = True
-        self.writer_stream.close()
         self.reader_stream.close()
         self.client_socket.close()
 

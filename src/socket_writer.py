@@ -45,9 +45,10 @@ class SocketWriter(threading.Thread):
                     self.event.clear()
                     self.terminated = True
                 finally:
-                    self.writer.write(struct.pack('<L', 0))
                     self.stream.seek(0)
                     self.stream.truncate()
                     self.event.clear()
                     self.working = False
         print('Writer bye bye')
+        self.writer.write(struct.pack('<L', 0))
+        self.writer.close()
