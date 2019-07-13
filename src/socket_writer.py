@@ -3,6 +3,7 @@ __author__ = 'vietbq'
 import struct
 import time
 import socket
+import requests
 import threading
 import io
 from PIL import Image
@@ -30,12 +31,11 @@ class SocketWriter(threading.Thread):
                         open_cv_image = open_cv_image[:, :, ::-1].copy()
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
-                            print(len(faces))
-                            print(type(faces[0].image))
                             im = Image.fromarray(faces[0].image)
                             image_name = '%d_face.jpeg'%count
                             im.save(image_name)
                             count += 1
+                            self.send_to_server(image_name)
                             print('Save image here')
 
                 except Exception as e:
@@ -52,3 +52,10 @@ class SocketWriter(threading.Thread):
             self.stream.close()
         except Exception as e:
             print(e)
+
+
+    def send_to_server(self, file_name):
+        url = 'http://35.198.244.7:3689/api/detect'
+        files = {'image_predict': open(file_name, 'rb')}
+        response = requests.post(url, files=files)
+        print(response.content)
