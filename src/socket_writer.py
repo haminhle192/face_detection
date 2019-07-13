@@ -20,6 +20,7 @@ class SocketWriter(threading.Thread):
 
     def run(self):
         print('Writer is running')
+        count = 1
         while not self.terminated:
             if self.event.wait(1):
                 try:
@@ -31,6 +32,10 @@ class SocketWriter(threading.Thread):
                         if len(faces) > 0:
                             print(len(faces))
                             print(type(faces[0].image))
+                            im = Image.fromarray(faces[0].image)
+                            image_name = '%d_face.jpeg'%count
+                            im.save(image_name)
+                            count += 1
                             print('Save image here')
 
                 except Exception as e:
