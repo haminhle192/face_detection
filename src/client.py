@@ -18,8 +18,6 @@ class Client:
         self.connection_lock = threading.Lock()
         self.terminated = False
         self.ignore_stream = io.BytesIO()
-        self.writer_stream = None
-        self.reader = None
         self.count = 0
         self.start = 0
         self.finish = 0
@@ -33,7 +31,7 @@ class Client:
                 detector = detection.Detection()
                 detector.find_faces(np.empty((48, 48, 3), dtype=np.uint8))
                 print('Did load model')
-                self.pool = [(SocketWriter(self.connection_lock, self.writer_stream, detector)) for i in range(1)]
+                self.pool = [(SocketWriter(self.connection_lock, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 5
                 time.sleep(2)
@@ -47,8 +45,6 @@ class Client:
                 self.terminal_streaming()
 
     def terminal_streaming(self):
-        if self.reader is not None:
-            self.reader.terminal_reader()
         for i in range(len(self.pool)):
             if self.pool[i] is not None:
                 self.pool[i].terminated = True
