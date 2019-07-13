@@ -30,6 +30,7 @@ class SocketWriter(threading.Thread):
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
                             print(len(faces))
+                            print(type(faces[0].image))
                             print('Save image here')
 
                 except Exception as e:
