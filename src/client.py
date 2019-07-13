@@ -50,7 +50,7 @@ class Client:
                 self.pool[i].terminated = True
 
     def writers(self):
-        while self.finish - self.start < 5:
+        while self.finish - self.start < 40:
             writer = self.get_not_working_writer()
             if writer is None:
                 self.ignore_stream.seek(0)
