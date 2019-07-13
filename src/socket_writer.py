@@ -9,9 +9,8 @@ from PIL import Image
 import numpy as np
 
 class SocketWriter(threading.Thread):
-    def __init__(self, connection_lock, writer, detector):
+    def __init__(self, connection_lock, detector):
         super(SocketWriter, self).__init__()
-        self.writer = writer
         self.event = threading.Event()
         self.detector = detector
         self.stream = io.BytesIO()
@@ -30,12 +29,9 @@ class SocketWriter(threading.Thread):
                         open_cv_image = open_cv_image[:, :, ::-1].copy()
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
-                            size = faces[0].data_image.tell()
-                            self.writer.write(struct.pack('<L', size))
-                            faces[0].data_image.seek(0)
-                            self.writer.flush()
-                            self.writer.write(faces[0].data_image.read(size))
-                            self.writer.flush()
+                            print(len(faces))
+                            print('Save image here')
+
                 except Exception as e:
                     print(e)
                 finally:
@@ -48,7 +44,5 @@ class SocketWriter(threading.Thread):
         try:
             self.stream.seek(0)
             self.stream.close()
-            self.writer.write(struct.pack('<L', 0))
-            self.writer.close()
         except Exception as e:
             print(e)

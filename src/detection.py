@@ -49,32 +49,10 @@ class Detection:
             face.bounding_box[1] = np.maximum(bb[1] - self.face_crop_margin / 2, 0)
             face.bounding_box[2] = np.minimum(bb[2] + self.face_crop_margin / 2, img_size[1])
             face.bounding_box[3] = np.minimum(bb[3] + self.face_crop_margin / 2, img_size[0])
+
             cropped = image[face.bounding_box[1]:face.bounding_box[3], face.bounding_box[0]:face.bounding_box[2], :]
             # face.image = misc.imresize(cropped, (self.face_crop_size, self.face_crop_size), interp='bilinear')
-            image_cropped = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
-            # image_cropped = cv2.bitwise_not(image_cropped)
-            # face.data_image = cv2.imencode('.jpg',image_cropped)
-            # print(image_cropped.shape)
-            face.data_image = self.encode_jpeg(image_cropped)
+            face.image = cv2.resize(cropped, (self.face_crop_size, self.face_crop_size), interpolation=cv2.INTER_LINEAR)
+
             faces.append(face)
         return faces
-
-
-    def encode_jpeg(self, arr):
-        assert arr.dtype == np.uint8
-         # simulate multi-channel array for single channel arrays
-        while arr.ndim < 4:
-            arr = arr[..., np.newaxis] # add channels to end of x,y,z
-        reshaped = arr.T
-        reshaped = np.moveaxis(reshaped, 0, -1)
-        reshaped = reshaped.reshape(reshaped.shape[0], reshaped.shape[1] * reshaped.shape[2], reshaped.shape[3])
-        print(reshaped.shape)
-        if reshaped.shape[2] == 1:
-            img = Image.fromarray(reshaped[:,:,0], mode='L')
-        elif reshaped.shape[1] == 3:
-            img = Image.fromarray(reshaped, mode='RGB')
-        else:
-            raise ValueError("Number of image channels should be 1 or 3. Got: {}".format(arr.shape[3]))
-        output = io.BytesIO()
-        img.save(output, format="JPEG")
-        return output

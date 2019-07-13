@@ -8,7 +8,6 @@ import detection as detection
 import json
 import io
 import numpy as np
-from socket_reader import SocketReader
 from socket_writer import SocketWriter
 
 class Client:
@@ -19,33 +18,21 @@ class Client:
         self.connection_lock = threading.Lock()
         self.terminated = False
         self.ignore_stream = io.BytesIO()
-        self.client_socket = None
         self.writer_stream = None
-        self.reader_stream = None
         self.reader = None
         self.count = 0
         self.start = 0
         self.finish = 0
 
-    def connect_server(self, address, port):
-        self.client_socket = socket.socket()
-        self.client_socket.connect((address, port))
-        self.writer_stream = self.client_socket.makefile('wb')
-        self.reader_stream = self.client_socket.makefile('rb')
-        print('Connected %s' % address)
-
     def start_streaming(self):
         self.start = time.time()
         self.finish = time.time()
-        self.connect_server('192.168.1.212', 8989)
         with picamera.PiCamera() as camera:
             try:
                 print('Starting load model')
                 detector = detection.Detection()
-                detector.find_faces(np.empty((160, 160, 3), dtype=np.uint8))
+                detector.find_faces(np.empty((48, 48, 3), dtype=np.uint8))
                 print('Did load model')
-                self.reader = SocketReader(self.reader_stream)
-                self.reader.start()
                 self.pool = [(SocketWriter(self.connection_lock, self.writer_stream, detector)) for i in range(1)]
                 camera.resolution = (640, 480)
                 camera.framerate = 5
@@ -65,11 +52,9 @@ class Client:
         for i in range(len(self.pool)):
             if self.pool[i] is not None:
                 self.pool[i].terminated = True
-        self.reader_stream.close()
-        self.client_socket.close()
 
     def writers(self):
-        while self.finish - self.start < 40:
+        while self.finish - self.start < 5:
             writer = self.get_not_working_writer()
             if writer is None:
                 self.ignore_stream.seek(0)
