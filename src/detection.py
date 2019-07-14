@@ -22,7 +22,7 @@ class Detection:
 
     gpu_memory_fraction = 0.3
 
-    def __init__(self, face_crop_size=160, face_crop_margin=32):
+    def __init__(self, face_crop_size=48, face_crop_margin=32):
         self.pnet, self.rnet, self.onet = self._setup_mtcnn()
         self.face_crop_size = face_crop_size
         self.face_crop_margin = face_crop_margin

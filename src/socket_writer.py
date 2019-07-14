@@ -32,7 +32,7 @@ class SocketWriter(threading.Thread):
                         faces = self.detector.find_faces(open_cv_image)
                         if len(faces) > 0:
                             im = Image.fromarray(faces[0].image)
-                            image_name = '%d_face.jpg'%count
+                            image_name = '%d_face.jpeg'%count
                             im.save(image_name)
                             count += 1
                             self.send_to_server(image_name)
